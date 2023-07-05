@@ -1,0 +1,17 @@
+java_library(
+    name = "tests",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//src/main/java/com/lexer",
+        "//src/main/java/com/token",
+        "@maven//:com_google_truth_truth",
+        "@maven//:junit_junit",
+    ],
+)
+
+java_test(
+    name = "AllTests",
+    size = "small",
+    test_class = "main.javatests.com.lexer.LexerTests",
+    runtime_deps = [":tests"],
+)

@@ -4,20 +4,35 @@ public enum TokenType {
 
     ILLEGAL("ILLEGAL"),
     EOF("EOF"),
-    IDENT("IDENT"), // add, foobar, x, y,
+    IDENT("IDENT"),
     INT("INT"),
+
+    // Operators.
     ASSIGN("="),
     PLUS("+"),
-    COMMA(","),
-    SEMICOLON(";"),
+    MINUS("-"),
+    BANG("!"),
+    ASTERISK("*"),
+    SLASH("/"),
+    LT("<"),
+    GT(">"),
 
+    // Special characters.
     LPAREN("("),
     RPAREN(")"),
     LBRACE("{"),
     RBRACE("}"),
+    COMMA(","),
+    SEMICOLON(";"),
 
+    // Keywords.
     FUNCTION("FUNCTION"),
-    LET("LET");
+    LET("LET"),
+    TRUE("TRUE"),
+    FALSE("FALSE"),
+    IF("IF"),
+    ELSE("ELSE"),
+    RETURN("RETURN");
 
     private String literal;
 
@@ -26,6 +41,10 @@ public enum TokenType {
     }
 
     public String toString() {
+        return literal;
+    }
+
+    public String getLiteral() {
         return literal;
     }
 
@@ -59,6 +78,16 @@ public enum TokenType {
             return TokenType.FUNCTION;
         } else if (ident.equals("let")) {
             return TokenType.LET;
+        } else if (ident.equals("true")) {
+            return TokenType.TRUE;
+        } else if (ident.equals("false")) {
+            return TokenType.FALSE;
+        } else if (ident.equals("if")) {
+            return TokenType.IF;
+        } else if (ident.equals("else")) {
+            return TokenType.ELSE;
+        } else if (ident.equals("return")) {
+            return TokenType.RETURN;
         }
         return TokenType.IDENT;
     }

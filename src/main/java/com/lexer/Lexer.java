@@ -32,9 +32,6 @@ public class Lexer {
         String tokenLiteral = Character.toString(this.ch);
 
         switch (tokenLiteral) {
-            case "=":
-                tokenBuilder.setType(TokenType.ASSIGN);
-                break;
             case ";":
                 tokenBuilder.setType(TokenType.SEMICOLON);
                 break;
@@ -49,6 +46,27 @@ public class Lexer {
                 break;
             case "+":
                 tokenBuilder.setType(TokenType.PLUS);
+                break;
+            case "=":
+                tokenBuilder.setType(TokenType.ASSIGN);
+                break;
+            case "-":
+                tokenBuilder.setType(TokenType.MINUS);
+                break;
+            case "!":
+                tokenBuilder.setType(TokenType.BANG);
+                break;
+            case "*":
+                tokenBuilder.setType(TokenType.ASTERISK);
+                break;
+            case "/":
+                tokenBuilder.setType(TokenType.SLASH);
+                break;
+            case "<":
+                tokenBuilder.setType(TokenType.LT);
+                break;
+            case ">":
+                tokenBuilder.setType(TokenType.GT);
                 break;
             case "{":
                 tokenBuilder.setType(TokenType.LBRACE);

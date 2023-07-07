@@ -79,6 +79,10 @@ public class Lexer {
             case "":
                 tokenBuilder.setType(TokenType.EOF);
                 break;
+            case "\"":
+                tokenLiteral = this.readString();
+                tokenBuilder.setType(TokenType.STRING);
+                break;
             case "=":
                 // Determine whether current char is the start of a '==' sequence or a single
                 // '='.
@@ -121,17 +125,10 @@ public class Lexer {
 
     }
 
-    private String readIdentifier() {
-        int startPosition = this.position;
-        // Identifiers are a string of 1 or more non-sepcial characters.
-        while (isLetter(this.ch)) {
-            this.readChar();
-        }
-        return this.input.substring(startPosition, this.position);
-    }
-
-    // Builds two character token assuming that this.position points to the first
-    // character's location.
+    /*
+     * Builds two character token assuming that this.position points to the first
+     * character's location.
+     */
     private Token.Builder setTwoCharLiteral(Token.Builder tokenBuilder) {
         char firstChar = this.ch;
         this.readChar();
@@ -150,6 +147,48 @@ public class Lexer {
         while (isWhitespace(this.ch)) {
             this.readChar();
         }
+    }
+
+    /*
+     * Reads an identifier (variable) name from the input.
+     * 
+     * Assumes that the lexer's current position is the start of the identifier.
+     * After calling readIdentifier the the lexer's position will point to the
+     * character after the end of the identifier.
+     */
+    private String readIdentifier() {
+        int startPosition = this.position;
+        // Identifiers are a string of 1 or more non-sepcial characters.
+        while (isLetter(this.ch)) {
+            this.readChar();
+        }
+        return this.input.substring(startPosition, this.position);
+    }
+
+    /*
+     * Reads a string from the input.
+     * 
+     * Assumes the lexer's current position is the first quotation mark surrounding
+     * the string. At the end of this call the lexer's position will point to the
+     * character after the final quotation mark in the string.
+     */
+    private String readString() {
+        // We want to skip the initial quotation mark.
+        this.readChar();
+        int startPosition = this.position;
+
+        while (isLetter(this.ch)) {
+            // Check if the next character is the quotation mark ending the string.
+            if (this.peekChar() == '"') {
+                break;
+            }
+            this.readChar();
+        }
+
+        String stringLiteral = this.input.substring(startPosition, this.position + 1);
+        this.readChar();
+
+        return stringLiteral;
     }
 
     private static boolean isWhitespace(char character) {

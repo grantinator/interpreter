@@ -1,4 +1,5 @@
-bazel-bin/
-bazel-interpreters/
-bazel-out/
-bazel-testlogs/
+
+bazel-bin
+bazel-interpreters
+bazel-testlogs
+bazel-out

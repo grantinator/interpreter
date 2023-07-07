@@ -11,6 +11,7 @@ import main.java.com.token.Token;
 import main.java.com.token.TokenType;
 
 public class LexerTests {
+
     @Test
     public void testNextToken_success() {
         String input = "=+-*/<>(){},;";
@@ -33,11 +34,11 @@ public class LexerTests {
 
     @Test
     public void testNextToken_parsesIdentifiers() {
-        String input = "let foo = 3";
+        String input = "let x = 3";
 
         Lexer lexer = new Lexer(input);
         assertToken(lexer.nextToken(), TokenType.LET, "let");
-        assertToken(lexer.nextToken(), TokenType.IDENT, "foo");
+        assertToken(lexer.nextToken(), TokenType.IDENT, "x");
         assertToken(lexer.nextToken(), TokenType.ASSIGN, "=");
         assertToken(lexer.nextToken(), TokenType.INT, "3");
 
@@ -118,7 +119,33 @@ public class LexerTests {
 
         // Line 8.
         assertToken(lexer.nextToken(), TokenType.RBRACE);
+    }
 
+    @Test
+    public void testNextToken_parseString() {
+        String input = "\"dog\"";
+
+        Lexer lexer = new Lexer(input);
+
+        assertToken(lexer.nextToken(), TokenType.STRING, "dog");
+    }
+
+    @Test
+    public void testNextToken_parseStringThenInt() {
+        String input = "let x = \"dog\"; let five = 5;";
+
+        Lexer lexer = new Lexer(input);
+        assertToken(lexer.nextToken(), TokenType.LET, "let");
+        assertToken(lexer.nextToken(), TokenType.IDENT, "x");
+        assertToken(lexer.nextToken(), TokenType.ASSIGN, "=");
+        assertToken(lexer.nextToken(), TokenType.STRING, "dog");
+        assertToken(lexer.nextToken(), TokenType.SEMICOLON);
+
+        assertToken(lexer.nextToken(), TokenType.LET);
+        assertToken(lexer.nextToken(), TokenType.IDENT, "five");
+        assertToken(lexer.nextToken(), TokenType.ASSIGN);
+        assertToken(lexer.nextToken(), TokenType.INT, "5");
+        assertToken(lexer.nextToken(), TokenType.SEMICOLON);
     }
 
     // TODO(grant): consider creating even higher level assertion functions, e.g.

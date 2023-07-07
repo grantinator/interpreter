@@ -2,8 +2,6 @@ package main.javatests.com.lexer;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import java.beans.Transient;
-
 import org.junit.Test;
 
 import main.java.com.lexer.Lexer;

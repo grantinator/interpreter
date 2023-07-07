@@ -17,6 +17,10 @@ public class Token {
         return this.literal;
     }
 
+    public String toString() {
+        return String.format("Token{type:%s, literal:%s}", this.type, this.literal);
+    }
+
     public static class Builder {
         private TokenType type;
         private String literal;

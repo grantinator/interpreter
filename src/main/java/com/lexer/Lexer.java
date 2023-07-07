@@ -8,11 +8,20 @@ public class Lexer {
     private final String input;
     private int position = -1; // current position in input (points to current char).
     private int readPosition = 0; // current reading position in input (after current char).
-    private char ch = 0; // current char under examination.
+    private char ch = 0; // current char under examination. TODO(grantbaum): refactor so this uses byte.
 
     public Lexer(String input) {
         this.input = input;
         this.readChar();
+    }
+
+    // Returns the next char without the lexer's position in the input.
+    public char peekChar() {
+        if (this.readPosition >= this.input.length()) {
+            return '\0';
+        }
+
+        return this.input.charAt(this.readPosition);
     }
 
     public void readChar() {
@@ -30,7 +39,6 @@ public class Lexer {
         this.skipWhitespace();
 
         String tokenLiteral = Character.toString(this.ch);
-
         switch (tokenLiteral) {
             case ";":
                 tokenBuilder.setType(TokenType.SEMICOLON);
@@ -47,14 +55,8 @@ public class Lexer {
             case "+":
                 tokenBuilder.setType(TokenType.PLUS);
                 break;
-            case "=":
-                tokenBuilder.setType(TokenType.ASSIGN);
-                break;
             case "-":
                 tokenBuilder.setType(TokenType.MINUS);
-                break;
-            case "!":
-                tokenBuilder.setType(TokenType.BANG);
                 break;
             case "*":
                 tokenBuilder.setType(TokenType.ASTERISK);
@@ -77,6 +79,24 @@ public class Lexer {
             case "":
                 tokenBuilder.setType(TokenType.EOF);
                 break;
+            case "=":
+                // Determine whether current char is the start of a '==' sequence or a single
+                // '='.
+                if (this.peekChar() == '=') {
+                    tokenBuilder = setTwoCharLiteral(tokenBuilder.setType(TokenType.EQ));
+                } else {
+                    tokenBuilder.setType(TokenType.ASSIGN);
+                }
+                break;
+            case "!":
+                // Determine whether current char is the start of a '!=' sequence or a single
+                // '!'.
+                if (this.peekChar() == '=') {
+                    tokenBuilder = setTwoCharLiteral(tokenBuilder.setType(TokenType.NOT_EQ));
+                } else {
+                    tokenBuilder.setType(TokenType.BANG);
+                }
+                break;
             default:
                 if (Character.isLetter(this.ch)) {
                     tokenLiteral = this.readIdentifier();
@@ -88,6 +108,9 @@ public class Lexer {
                     tokenBuilder.setLiteral(tokenLiteral);
                     tokenBuilder.setType(TokenType.INT);
                     return tokenBuilder.build();
+                } else if (this.ch == 0) {
+                    tokenLiteral = "";
+                    tokenBuilder.setType(TokenType.EOF);
                 } else {
                     tokenBuilder.setType(TokenType.ILLEGAL);
                 }
@@ -105,6 +128,14 @@ public class Lexer {
             this.readChar();
         }
         return this.input.substring(startPosition, this.position);
+    }
+
+    // Builds two character token assuming that this.position points to the first
+    // character's location.
+    private Token.Builder setTwoCharLiteral(Token.Builder tokenBuilder) {
+        char firstChar = this.ch;
+        this.readChar();
+        return tokenBuilder.setLiteral(String.valueOf(firstChar) + String.valueOf(this.ch));
     }
 
     /*

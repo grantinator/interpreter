@@ -62,7 +62,7 @@ public class LexerTests {
     @Test
     public void testNextToken_fullScript() {
         // TODO(grant): figure out how to break this across multiple lines.
-        String input = "let five = 5; let ten = 10; let add = fn(x,y) { if (x > 10) { return false; } return x+y;}";
+        String input = "let five = 5; let ten = 10; let add = fn(x,y) { if (x != 10) { return false; } return x+y;}";
 
         Lexer lexer = new Lexer(input);
 
@@ -96,7 +96,7 @@ public class LexerTests {
         assertToken(lexer.nextToken(), TokenType.IF);
         assertToken(lexer.nextToken(), TokenType.LPAREN);
         assertToken(lexer.nextToken(), TokenType.IDENT, "x");
-        assertToken(lexer.nextToken(), TokenType.GT);
+        assertToken(lexer.nextToken(), TokenType.NOT_EQ);
         assertToken(lexer.nextToken(), TokenType.INT, "10");
         assertToken(lexer.nextToken(), TokenType.RPAREN);
         assertToken(lexer.nextToken(), TokenType.LBRACE);

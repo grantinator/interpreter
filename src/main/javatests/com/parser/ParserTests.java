@@ -2,10 +2,13 @@ package main.javatests.com.parser;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import java.beans.Transient;
+
 import org.junit.Test;
 
 import main.java.com.ast.LetStatement;
 import main.java.com.ast.Program;
+import main.java.com.ast.ReturnStatement;
 import main.java.com.ast.Statement;
 import main.java.com.lexer.Lexer;
 import main.java.com.parser.Parser;
@@ -16,7 +19,7 @@ public class ParserTests {
     public void testLetStatements() {
         String input = "let x = 5;"
                 + "let y = 10;"
-                + "let  = 4567;";
+                + "let foobar = 4567;";
 
         Lexer lexer = new Lexer(input);
         Parser parser = Parser.getInstance(lexer);
@@ -29,6 +32,26 @@ public class ParserTests {
         assertLetStatement(program.getStatements().get(0), "x");
         assertLetStatement(program.getStatements().get(1), "y");
         assertLetStatement(program.getStatements().get(2), "foobar");
+    }
+
+    @Test
+    public void testReturnStatements() {
+        String input = "return 5; return 10; return add(15);";
+
+        Lexer lexer = new Lexer(input);
+        Parser parser = Parser.getInstance(lexer);
+
+        Program program = parser.parseProgram();
+        assertNoParserErrors(parser);
+
+        assertReturnStatement(program.getStatements().get(0));
+        assertReturnStatement(program.getStatements().get(1));
+        assertReturnStatement(program.getStatements().get(2));
+    }
+
+    private void assertReturnStatement(Statement statement) {
+        assertThat(statement.tokenLiteral()).isEqualTo("return");
+        ReturnStatement returnStatement = (ReturnStatement) statement;
     }
 
     private void assertLetStatement(Statement statement, String name) {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import main.java.com.ast.Identifier;
 import main.java.com.ast.LetStatement;
 import main.java.com.ast.Program;
+import main.java.com.ast.ReturnStatement;
 import main.java.com.lexer.Lexer;
 import main.java.com.token.Token;
 import main.java.com.token.TokenType;
@@ -56,14 +57,27 @@ public class Parser {
         switch (this.currToken.getType()) {
             case LET:
                 return this.parseLetStatement();
+            case RETURN:
+                return this.parseReturnStatement();
             default:
                 return null;
         }
     }
 
+    private Statement parseReturnStatement() {
+        ReturnStatement.Builder returnStatementBuilder = new ReturnStatement.Builder().setToken(this.currToken);
+
+        this.nextToken();
+
+        // TODO: Skipping over the expression until we encounter a semicolon.
+        if (!this.currTokenIs(TokenType.SEMICOLON)) {
+            this.nextToken();
+        }
+        return returnStatementBuilder.build();
+    }
+
     private Statement parseLetStatement() {
         LetStatement.Builder letStatement = new LetStatement.Builder().setToken(this.currToken);
-
         if (!this.expectPeek(TokenType.IDENT)) {
             return null;
         }

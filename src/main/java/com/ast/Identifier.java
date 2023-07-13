@@ -13,6 +13,10 @@ public class Identifier implements Expression {
         this.value = value;
     }
 
+    public String toString() {
+        return this.value;
+    }
+
     public Identifier expressionNode() {
         return this;
     }

@@ -4,19 +4,23 @@ import main.java.com.token.Token;
 
 public class ReturnStatement implements Statement {
     private Token token;
-    private Expression expression;
+    private Expression returnValue;
 
-    ReturnStatement(Token token, Expression expression) {
+    ReturnStatement(Token token, Expression returnValue) {
         this.token = token;
-        this.expression = expression;
+        this.returnValue = returnValue;
     }
 
     public Token getToken() {
         return this.token;
     }
 
+    public String toString() {
+        return String.format("%s %s;", this.token.getLiteral(), this.returnValue);
+    }
+
     public Expression getExpression() {
-        return this.expression;
+        return this.returnValue;
     }
 
     public String tokenLiteral() {
@@ -29,7 +33,7 @@ public class ReturnStatement implements Statement {
 
     public static class Builder {
         private Token token;
-        private Expression expression;
+        private Expression returnValue;
 
         public Builder() {
         }
@@ -39,13 +43,13 @@ public class ReturnStatement implements Statement {
             return this;
         }
 
-        public Builder setExpression(Expression expression) {
-            this.expression = expression;
+        public Builder setReturnValue(Expression returnValue) {
+            this.returnValue = returnValue;
             return this;
         }
 
         public ReturnStatement build() {
-            return new ReturnStatement(this.token, this.expression);
+            return new ReturnStatement(this.token, this.returnValue);
         }
     }
 }

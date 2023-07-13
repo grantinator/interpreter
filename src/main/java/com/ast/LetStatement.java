@@ -10,14 +10,18 @@ public class LetStatement implements Statement {
     private final Identifier name;
     private Expression value;
 
-    LetStatement(Token token, Identifier identifier, Expression value) {
+    LetStatement(Token token, Identifier name, Expression value) {
         this.token = token;
-        this.name = identifier;
+        this.name = name;
         this.value = value;
     }
 
     public LetStatement statementNode() {
         return this;
+    }
+
+    public String toString() {
+        return String.format("%s %s = %s;", this.token.getLiteral(), this.name.getValue(), this.value.tokenLiteral());
     }
 
     public String tokenLiteral() {

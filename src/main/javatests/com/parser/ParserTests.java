@@ -2,10 +2,13 @@ package main.javatests.com.parser;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import java.beans.Expression;
 import java.beans.Transient;
 
 import org.junit.Test;
 
+import main.java.com.ast.ExpressionStatement;
+import main.java.com.ast.Identifier;
 import main.java.com.ast.LetStatement;
 import main.java.com.ast.Program;
 import main.java.com.ast.ReturnStatement;
@@ -47,6 +50,25 @@ public class ParserTests {
         assertReturnStatement(program.getStatements().get(0));
         assertReturnStatement(program.getStatements().get(1));
         assertReturnStatement(program.getStatements().get(2));
+    }
+
+    @Test
+    public void testIdentifierExpression() {
+        String input = "foobar";
+
+        Lexer lexer = new Lexer(input);
+        Parser parser = Parser.getInstance(lexer);
+
+        Program program = parser.parseProgram();
+        assertNoParserErrors(parser);
+
+        assertThat(program.getStatements().size()).isEqualTo(1);
+        assertThat(program.getStatements().get(0).getClass()).isEqualTo(ExpressionStatement.class);
+        ExpressionStatement expressionStatement = (ExpressionStatement) program.getStatements().get(0);
+        assertThat(expressionStatement.getExpression().getClass()).isEqualTo(Identifier.class);
+        Identifier identifier = (Identifier) expressionStatement.getExpression();
+        assertThat(identifier.getValue()).isEqulao("foobar");
+        assertThat(identifier.tokenLiteral()).isEqualTo("foobar");
     }
 
     private void assertReturnStatement(Statement statement) {

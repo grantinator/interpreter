@@ -1,7 +1,12 @@
 package main.java.com.parser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
+import main.java.com.ast.Expression;
 import main.java.com.ast.Identifier;
 import main.java.com.ast.LetStatement;
 import main.java.com.ast.Program;
@@ -13,8 +18,16 @@ import main.java.com.ast.Statement;
 
 public class Parser {
     private final Lexer lexer;
+
     private Token currToken;
     private Token peekToken;
+
+    // Supplier<Expression> is for methods with no argument and return type
+    // ast.Expression.
+    private Map<TokenType, Supplier<Expression>> prefixParseFn = new HashMap();
+    // Function<Expression, Expression> takes ast.Expression as argument and returns
+    // an ast.Expression.
+    private Map<TokenType, Function<Expression, Expression>> infixParseFn = new HashMap();
 
     private final ArrayList<ParserError> errors = new ArrayList<ParserError>();
 
@@ -37,6 +50,14 @@ public class Parser {
 
     public ArrayList<ParserError> getErrors() {
         return this.errors;
+    }
+
+    public void registerPrefix(TokenType tokenType, Supplier<Expression> prefixParseFn) {
+        this.prefixParseFn.put(tokenType, prefixParseFn);
+    }
+
+    public void registerInfix(TokenType tokenType, Function<Expression, Expression> infixParseFn) {
+        this.infixParseFn.put(tokenType, infixParseFn);
     }
 
     public Program parseProgram() {
